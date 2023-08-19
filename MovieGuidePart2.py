@@ -1,49 +1,68 @@
-def movie_guide():
-    print("The Movie List Program")
-    print()
-    print("COMMAND MENU")
-    print()
-    print("list - List all movies")
-    print("add - Add a movie")
-    print("delete - Delete a movie")
-    print("exit - Close the application")
+with open("movie.txt", "w") as file:
+    file.write("Spider-Man\nBullet Train\nBad Boys\n")
 
-def list(movie_list):
-    for i, movie in enumerate(movie_list, start = 1):
-        print(f"{i}. {movie}")
-        print()
+def populate_list(file_name):
+    movie_list = []
+    with open(file_name, "r") as file:
+        for line in file:
+            movie_list.append(line.strip())
+    return movie_list
 
-def add(movie_list):
-    movie = input("Name:    ")
-    movie_list.append(movie)
-    print(f"{movie} was added. \n")
+def display_menu():
+    print("\nMovie List Menu")
+    print("list --> Display movie titles.")
+    print("add --> Add a movie title.")
+    print("delete --> Delete a movie title.")
+    print("exit --> Close application")
 
-def delete(movie_list):
-    number = int(input("Number: "))
-    if number < 1 or number > len(movie_list):
-        print("Invalid movie number.    \n")
+def display_titles(movie_list):
+    print("\nMovie Titles:")
+    for idx, title in enumerate(movie_list, start=1):
+        print(f"{idx}. {title}")
+
+def add_title(movie_list, title, file_name):
+    movie_list.append(title)
+    with open(file_name, "a") as file:
+        file.write(title + "\n")
+    print(f"\n{title} has been added to the list.")
+
+def delete_title(movie_list, index, file_name):
+    if 1 <= index <= len(movie_list):
+        deleted_title = movie_list.pop(index - 1)
+        with open(file_name, 'w') as file:
+            file.write("\n".join(movie_list))
+        print(f"\n{deleted_title} has been deleted from  the list")
     else:
-        movie = movie_list.pop(number - 1)
-        print(f"{movie} was deleted. \n")
+        print(f"\nInvalid index number. No movie was deleted.")
 
 def main():
-    movie_list = ["Avengers", "Austin Powers", "Creed"]
-    
-    movie_guide()
+    movie_file ="movie.txt"
+    movie_list = populate_list(movie_file)
 
     while True:
-        command = input("Command:   ")
-        if command.lower() == "list":
-            list(movie_list)
-        elif command.lower() == "add":
-            add(movie_list)
-        elif command.lower() == "delete":
-            delete(movie_list)
-        elif command.lower() == "exit":
+        display_menu()
+        choice = input('Enter your choice:  ')
+
+        if choice == "list":
+            display_titles(movie_list)
+        elif choice == "add":
+            new_title = input("Enter the new movie title:   ")
+            add_title(movie_list, new_title, movie_file)
+            display_titles(movie_list)
+        elif choice == "delete":
+            display_titles(movie_list)
+            index = int(input("Enter the number of the movie title you would like to delete:"))
+            delete_title(movie_list, index, movie_file)
+            display_titles(movie_list)
+        elif choice == "exit":
+            print("Closing Application")
             break
         else:
-            print("Not a valid command, please try again. \n")
-    print("Bye!")
+            print("Invalid choice, please try again")
 
 if __name__ == "__main__":
     main()
+
+
+
+
